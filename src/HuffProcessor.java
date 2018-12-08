@@ -89,10 +89,8 @@ public class HuffProcessor {
 			encodings[root.myValue] = path;
 			return;
 		}
-		//if (root.myLeft != null) 
-			makeCodingsHelper(root.myLeft, path + "0", encodings);
-		//if (root.myRight != null) 
-			makeCodingsHelper(root.myRight, path + "1", encodings);
+		makeCodingsHelper(root.myLeft, path + "0", encodings);
+		makeCodingsHelper(root.myRight, path + "1", encodings);
 	}
 	private void writeHeader(HuffNode root, BitOutputStream out) {
 		if (root == null) return;
