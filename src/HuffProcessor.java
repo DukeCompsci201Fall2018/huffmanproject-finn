@@ -8,6 +8,8 @@
  * and including debug and bits read/written information
  * 
  * @author Owen Astrachan
+ * Names: Anshul Shah and Sergio Vera-Wallace
+ * netID: as817 and stw21
  */
 
 public class HuffProcessor {
@@ -18,9 +20,7 @@ public class HuffProcessor {
 	public static final int PSEUDO_EOF = ALPH_SIZE;
 	public static final int HUFF_NUMBER = 0xface8200;
 	public static final int HUFF_TREE  = HUFF_NUMBER | 1;
-
 	private final int myDebugLevel;
-	
 	public static final int DEBUG_HIGH = 4;
 	public static final int DEBUG_LOW = 1;
 	
@@ -59,12 +59,32 @@ public class HuffProcessor {
 	 *            Buffered bit stream writing to the output file.
 	 */
 	public void decompress(BitInputStream in, BitOutputStream out){
-
+		int bits = in.readBits(BITS_PER_INT);
+		if(bits != HUFF_TREE) {
+			throw new HuffException("illegal header starts with "+ bits);
+		}
+		HuffNode root = readTree(in);
+		//readCompressBits(root,in,out);
 		while (true){
 			int val = in.readBits(BITS_PER_WORD);
 			if (val == -1) break;
 			out.writeBits(BITS_PER_WORD, val);
 		}
 		out.close();
+	}
+
+	private HuffNode readTree(BitInputStream in) {
+		int bit = in.readBits(1);
+		if(bit == -1) {
+			throw new HuffException("illegal bit value: " + bit);
+		}
+		if(bit == 0) {
+			HuffNode left = readTree(in);
+			HuffNode right = readTree(in);
+			return new HuffNode(0,0,left,right);
+		}
+		else {
+			return new HuffNode(in.readBits(BITS_PER_WORD + 1), 0, null, null);
+		}
 	}
 }
