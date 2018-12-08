@@ -83,7 +83,7 @@ public class HuffProcessor {
 	    makeCodingsHelper(root,"",encodings);
 		return encodings;
 	}
-	public void makeCodingsHelper(HuffNode root, String path, String[] encodings) {
+	private void makeCodingsHelper(HuffNode root, String path, String[] encodings) {
 		if(root.myLeft == null && root.myRight == null) {
 			encodings[root.myValue] = path;
 			return;
